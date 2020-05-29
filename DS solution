@@ -1,0 +1,66 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct Node
+{
+  int data;
+  struct Node *left, *right;
+};
+
+struct Node* newNode(int data)
+{
+  struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+  node->data = data;
+  node->left = node->right = NULL;
+  return (node);
+}
+
+struct Node* insertLevelOrder(int arr[], struct Node* root, int i, int n)
+{
+  if (i < n)
+  {
+    struct Node* temp = newNode(arr[i]);
+    root = temp;
+
+    root->left = insertLevelOrder(arr, root->left, 2 * i + 1, n);
+
+    root->right = insertLevelOrder(arr, root->right, 2 * i + 2, n);
+  }
+  return root;
+}
+
+struct Node* buildTree(int t[], int n)
+{
+  struct Node* root = (struct Node*)malloc(sizeof(struct Node));
+  root = insertLevelOrder(t, root, 0, n);
+  return(root);
+}
+int areSameTree(struct Node* t1, struct Node* t2)
+{
+    if (t1==NULL && t2==NULL) 
+        return 1; 
+  
+  if (t2!=NULL && t1!=NULL) 
+    { 
+        return
+        (t1->data == t2->data && areSameTree(t1->left, t2->left) &&  areSameTree(t1->right, t2->right)); 
+    } 
+ return 0; 
+}
+
+int main()
+{
+  int a[20], b[20], n, m, i;
+  scanf("%d", &n);
+  for(i=0;i<n;i++)
+    scanf("%d", &a[i]);
+  scanf("%d", &m);
+  for(i=0;i<m;i++)
+    scanf("%d", &b[i]);
+  struct Node* root = NULL;
+  root = buildTree(a, n);
+  struct Node* root2 = NULL;
+  root2 = buildTree(b, m);
+  printf("%d", areSameTree(root, root2));
+  return 0;
+}
